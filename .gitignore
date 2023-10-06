@@ -161,3 +161,6 @@ cython_debug/
 
 # dataset blob
 mnist_data/
+TrainedModels/
+mnist_test_*/
+Input/
