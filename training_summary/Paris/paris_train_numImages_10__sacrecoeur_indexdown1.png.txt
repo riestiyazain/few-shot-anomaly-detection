@@ -1,0 +1,7 @@
+sacrecoeur results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.8096527103161295
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.8061183921675731

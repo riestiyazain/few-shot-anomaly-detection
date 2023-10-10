@@ -1,0 +1,7 @@
+pompidou results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.6693242047955679
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.6223387478315723
