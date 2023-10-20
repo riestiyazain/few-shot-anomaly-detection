@@ -162,9 +162,18 @@ cython_debug/
 # dataset blob
 mnist_data/
 MNIST/
-paris_test_*/
-TrainedModels/
 mnist_test_*/
-Input/
+
 Dataloaders/Paris/
+paris_test_*/
+paris_data/
+
+TrainedModels/
+Input/
+
 cifar_data/
+cifar_test_*/
+cifar_train*
+
+mvtec_data/
+mvtec_anomaly_detection*

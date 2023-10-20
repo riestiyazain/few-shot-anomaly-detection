@@ -110,7 +110,12 @@ def defect_detection(input_name_model,test_size, opt):
                         current_transform = score_all[j]
                         score_transform = current_transform[:, j]
                         sorted_score_transform, indices = torch.sort(score_transform, descending=False, dim=0)
-                        num_patches = int(sorted_score_transform.shape[0]* opt.fraction_defect)
+                        num_patches = int(sorted_score_transform.shape[0] * opt.fraction_defect)
+
+                        # make patch mask for visualizing defect detection on the input image
+                        # then compute intersection over union with the ground truth mask (0 and 1)
+                        # "real/reals/real_transform" is the input image to the discriminator
+
                         score_transform = torch.mean(sorted_score_transform[:num_patches])
                         score_image_in_scale += score_transform
                     err_scale.append(score_image_in_scale)
@@ -139,6 +144,6 @@ def defect_detection(input_name_model,test_size, opt):
             print("roc_auc_score T1 normalize all ={}".format(auc1), file=text_file)
 
     path = "mvtec_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(opt.num_images)
-    os.remove(path + "/mvtec_data_test_" + str(pos_class) + str(scale) + "_" + str(opt.index_download) + ".npy")
-    os.remove(path + "/mvtec_labels_test_" + str(pos_class) + str(scale) + "_" + str(opt.index_download) + ".npy")
+    # os.remove(path + "/mvtec_data_test_" + str(pos_class) + str(scale) + "_" + str(opt.index_download) + ".npy")
+    # os.remove(path + "/mvtec_labels_test_" + str(pos_class) + str(scale) + "_" + str(opt.index_download) + ".npy")
     del xTest_input, yTest_input

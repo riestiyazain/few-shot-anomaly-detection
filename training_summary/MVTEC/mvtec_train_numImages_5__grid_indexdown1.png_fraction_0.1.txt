@@ -1,0 +1,7 @@
+grid results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7944862155388471
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.8095238095238095

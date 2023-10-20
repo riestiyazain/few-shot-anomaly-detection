@@ -1,0 +1,7 @@
+cable results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.41847826086956513
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.4627061469265367

@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "args": ["--num_images", "1", "--pos_class", "defense", "--dataset", "paris", "--mode", "eval", "--test_size", "300"]
+            "args": ["--num_images", "1", "--pos_class", "bottle", "--dataset", "mvtec"]
         }
     ]
 }

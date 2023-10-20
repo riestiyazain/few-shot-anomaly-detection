@@ -1,0 +1,7 @@
+leather results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7078804347826086
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.7279211956521738

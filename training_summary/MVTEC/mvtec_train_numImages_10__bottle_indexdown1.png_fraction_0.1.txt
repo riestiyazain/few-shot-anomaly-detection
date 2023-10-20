@@ -1,0 +1,7 @@
+bottle results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7952380952380953
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.8801587301587301

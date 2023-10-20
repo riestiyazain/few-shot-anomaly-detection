@@ -1,0 +1,7 @@
+screw results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7683951629432262
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.6558721049395368

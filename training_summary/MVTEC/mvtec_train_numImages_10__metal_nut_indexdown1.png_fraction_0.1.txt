@@ -1,0 +1,7 @@
+metal_nut results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.5410557184750733
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.596774193548387

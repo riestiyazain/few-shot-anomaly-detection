@@ -1,0 +1,7 @@
+hazelnut results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.4717857142857143
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.46071428571428574

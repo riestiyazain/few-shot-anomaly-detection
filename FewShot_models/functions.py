@@ -196,7 +196,7 @@ def collect_reals(opt, reals, Zs, NoiseAmp):
         reals[index_image] = []
         Zs[index_image] = []
         NoiseAmp[index_image] = []
-        reals = creat_reals_pyramid(real,reals,opt, index_image)
+        reals = creat_reals_pyramid(real, reals, opt, index_image)
 
     return reals, Zs, NoiseAmp, in_s, scale_num
 

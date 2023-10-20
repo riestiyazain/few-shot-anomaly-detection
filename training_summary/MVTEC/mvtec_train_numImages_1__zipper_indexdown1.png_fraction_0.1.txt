@@ -1,0 +1,7 @@
+zipper results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.5661764705882353
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.615546218487395

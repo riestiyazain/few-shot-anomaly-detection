@@ -1,0 +1,7 @@
+tile results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7427849927849928
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.7554112554112554

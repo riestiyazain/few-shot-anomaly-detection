@@ -1,0 +1,7 @@
+eiffel results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.5393927861673734
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.5299313828004946

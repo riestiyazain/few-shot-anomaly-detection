@@ -34,13 +34,13 @@ def download_class_paris(opt):
 
     count_images,step_index = 0,0
     dicty = {}
-    path_lines_ok = "Paris/lab/" + str(pos_class) + "_ok.txt" # take images from this file
+    path_lines_ok = "Dataloaders/Paris/lab/" + str(pos_class) + "_ok.txt" # take images from this file
     with open(path_lines_ok, "r") as f:
         lines_ok= f.readlines()
         if opt.random_images_download == False:
             for line in lines_ok:
                 path = line.strip("\n")
-                t = cv2.imread("Paris/jpg/1/" + str(path) + ".jpg")
+                t = cv2.imread("Dataloaders/Paris/jpg/1/" + str(path) + ".jpg")
                 imsave(t, count_images)
                 dicty[count_images] = path
                 count_images += 1
@@ -54,7 +54,7 @@ def download_class_paris(opt):
             for i, line in enumerate(lines_ok):
                 if i in training_images:
                     path = line.strip("\n")
-                    t = cv2.imread("Paris/jpg/1/" + str(path) + ".jpg")
+                    t = cv2.imread("Dataloaders/Paris/jpg/1/" + str(path) + ".jpg")
                     imsave(t, count_images)
                     dicty[count_images] = path
                     count_images += 1
@@ -87,21 +87,21 @@ def download_class_paris(opt):
     transform = transforms.Compose(
         [torchvision.transforms.Resize((scale, scale)),
          transforms.ToTensor()])
-    paris_testset = torchvision.datasets.ImageFolder(root='Paris/jpg',
+    paris_testset = torchvision.datasets.ImageFolder(root='Dataloaders/Paris/jpg',
                                                          transform=transform)
     paris_loader = torch.utils.data.DataLoader(dataset=paris_testset,
                                              batch_size=len(paris_testset),
                                              shuffle=False)
     (paris_data, i) = next(iter(paris_loader))
     paris_data = paris_data.numpy()
-    path_lines_ok = "Paris/lab/" + str(pos_class) + "_ok.txt"
+    path_lines_ok = "Dataloaders/Paris/lab/" + str(pos_class) + "_ok.txt"
     with open(path_lines_ok, "r") as f:
         lines_ok = f.readlines()
     paris_target_new = []
     paris_data_new = []
     for i in range(paris_data.shape[0]):
         sample_fname, _ = paris_loader.dataset.samples[i]
-        sample_fname = sample_fname[12:-4]
+        sample_fname = os.path.basename(sample_fname[12:-4])
         if sample_fname in training_images:
             continue
         in_normal_class = False
@@ -116,6 +116,7 @@ def download_class_paris(opt):
     paris_data_new = np.stack(paris_data_new)
     paris_target_new = np.stack(paris_target_new)
 
+    scale = 450
     np.save(path + "/" +  "paris_data_test_" + str(pos_class) + str(scale)+  "_" + str(opt.index_download) + ".npy" , paris_data_new)
     np.save(path + "/"+  "paris_labels_test_" + str(pos_class) + str(scale)+  "_" + str(opt.index_download) +".npy" , paris_target_new)
 

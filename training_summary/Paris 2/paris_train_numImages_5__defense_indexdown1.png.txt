@@ -1,0 +1,7 @@
+defense results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.6892475096219153
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.6763092172288884

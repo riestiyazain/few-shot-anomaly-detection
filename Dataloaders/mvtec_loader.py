@@ -15,7 +15,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms as T
 from torch.utils.data import DataLoader
 
-URL = 'ftp://guest:GU.205dldo@ftp.softronics.ch/mvtec_anomaly_detection/mvtec_anomaly_detection.tar.xz'
+URL = 'https://www.mydrive.ch/shares/38536/3830184030e49fe74747669442f0f282/download/420938113-1629952094/mvtec_anomaly_detection.tar.xz'
 
 classes = ['bottle', 'cable', 'capsule', 'carpet', 'grid',
            'hazelnut', 'leather', 'metal_nut', 'pill', 'screw',
@@ -40,7 +40,7 @@ class MVTecDataset(Dataset):
         self.mvtec_folder_path = os.path.join('mvtec_anomaly_detection')
         self.download()
         self.x, self.y = self.load_dataset_folder()
-        self.transform_x = T.Compose([T.Resize(resize, Image.ANTIALIAS),
+        self.transform_x = T.Compose([T.Resize(resize),
                                       T.CenterCrop(cropsize),
                                       T.ToTensor()])
         self.transform_mask = T.Compose([T.Resize(resize, Image.NEAREST),
@@ -96,8 +96,8 @@ class MVTecDataset(Dataset):
         """Download dataset if not exist"""
         if not os.path.exists(self.mvtec_folder_path):
             tar_file_path = self.mvtec_folder_path + '.tar.xz'
-            if not os.path.exists(tar_file_path):
-                download_url(URL, tar_file_path)
+            # if not os.path.exists(tar_file_path):
+            #     download_url(URL, tar_file_path)
             print('unzip downloaded dataset: %s' % tar_file_path)
             tar = tarfile.open(tar_file_path, 'r:xz')
             tar.extractall(self.mvtec_folder_path)
@@ -152,7 +152,7 @@ def download_class_mvtec(opt):
         trainset = MVTecDataset(class_name=opt.pos_class, is_train=True)  # images of size 224, 224
         trainloader = DataLoader(trainset, batch_size=len(trainset), pin_memory=True)
         dataiter = iter(trainloader)
-        images, _ = dataiter.next()
+        images, _ = next(dataiter)
         dicty = {}
         if opt.random_images_download == False:
             count_images,step_index = 0,0

@@ -1,0 +1,7 @@
+toothbrush results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.5305555555555556
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.3805555555555556

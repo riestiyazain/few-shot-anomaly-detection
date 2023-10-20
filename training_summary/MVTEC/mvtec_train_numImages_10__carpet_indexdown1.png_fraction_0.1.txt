@@ -1,0 +1,7 @@
+carpet results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7371589085072231
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.6219903691813804
