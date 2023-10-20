@@ -304,7 +304,7 @@ def post_config(opt, input_dir=None):
             opt.device_ids = gpu_ids
 
 
-    opt.device = torch.device("cpu" if opt.not_cuda else "cuda:0")
+    opt.device = torch.device("cuda:0" if use_cuda else "cpu")
     opt.niter_init = opt.niter
     opt.noise_amp_init = opt.noise_amp
     opt.nfc_init = opt.nfc

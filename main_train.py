@@ -40,6 +40,7 @@ if __name__ == '__main__':
     num_images = opt.num_images
     opt.num_transforms=opt.num_transforms
     dataset = opt.dataset
+    
 
     if opt.if_download == True:
         if dataset == 'cifar':
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     opt = functions.post_config(opt)
     Gs = []
     Zs,NoiseAmp = {}, {}
-    reals_list = torch.FloatTensor(num_images,1,int(opt.nc_im), int(opt.size_image), int(opt.size_image)).cuda()
+    reals_list = torch.FloatTensor(num_images,1,int(opt.nc_im), int(opt.size_image), int(opt.size_image)).to(opt.device)
 
     for i in range(num_images):
         real = img.imread("%s/%s_%d.png" % (opt.input_dir, opt.input_name[:-4], i))
@@ -76,9 +77,14 @@ if __name__ == '__main__':
     reals = {}
     lst =  np.load("TrainedModels/" + str(opt.input_name)[:-4] +  "/transformations.npy")
     opt.list_transformations = lst
+
+    print(opt.input_name, opt.test_size)
+
     if opt.mode == 'train':
+        print("in train conditional")
         train(opt, Gs, Zs, reals, NoiseAmp)
     if dataset == 'mvtec':
+        print("in mvtec eval conditional")
         defect_detection(opt.input_name, opt.test_size, opt)
     else:
         anomaly_detection(opt.input_name, opt.test_size, opt)

@@ -177,3 +177,4 @@ cifar_train*
 
 mvtec_data/
 mvtec_anomaly_detection*
+mvtec_visualizations

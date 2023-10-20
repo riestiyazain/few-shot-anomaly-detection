@@ -128,6 +128,8 @@ def download_class_mvtec(opt):
     num_images = opt.num_images
 
     def imsave(img, i):
+        if not os.path.exists("Input/Images"):
+            os.makedirs("Input/Images")
         # transform = transforms.Compose([transforms.ToPILImage(), transforms.Resize((scale, scale))])
         # im = transform(img)
         img = (img) * 255

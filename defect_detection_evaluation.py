@@ -20,6 +20,7 @@ import torch
 from torch.utils.data import Dataset
 from torchvision import transforms as T
 from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
 
 
 
@@ -46,9 +47,9 @@ def defect_detection(input_name_model,test_size, opt):
     path = "TrainedModels/" + str(opt.input_name)[:-4] + \
            "/scale_factor=0.750000,alpha=" + str(alpha)
     probs_predictions = []
-    real = torch.from_numpy(xTest_input[0]).cuda().unsqueeze(0)
+    real = torch.from_numpy(xTest_input[0]).to(opt.device).unsqueeze(0)
     functions.adjust_scales2image(real, opt)
-    scores_per_scale_dict = torch.from_numpy(np.zeros((opt.stop_scale+1,batch_n))).cuda()
+    scores_per_scale_dict = torch.from_numpy(np.zeros((opt.stop_scale+1,batch_n))).to(opt.device)
 
     def compute_normalized_dict(scores_per_scale_dict):
         for scale in range(0, opt.stop_scale + 1):
@@ -62,7 +63,7 @@ def defect_detection(input_name_model,test_size, opt):
     with torch.no_grad():
         for i in range(batch_n):
             reals = {}
-            real = torch.from_numpy(xTest_input[i]).unsqueeze(0).cuda()
+            real = torch.from_numpy(xTest_input[i]).unsqueeze(0).to(opt.device)
             real = functions.norm(real)
             real = real[:, 0:3, :, :]
             functions.adjust_scales2image(real, opt)
@@ -79,7 +80,7 @@ def defect_detection(input_name_model,test_size, opt):
                 if torch.cuda.device_count() > 1:
                     netD = DataParallelModel(netD, device_ids=opt.device_ids)
                 netD.to(opt.device)
-                netD.load_state_dict(torch.load('%s/%d/netD.pth' % (path, scale_num)))
+                netD.load_state_dict(torch.load('%s/%d/netD.pth' % (path, scale_num), map_location=opt.device))
                 netD.eval()
 
                 err_scale = []
@@ -94,27 +95,81 @@ def defect_detection(input_name_model,test_size, opt):
                         reals_transform.append(real_augment)
                     real_transform = torch.stack(reals_transform)
                     output = netD(real_transform)
+
+                    output_shape = output.size()
+                    image_width = output_shape[-1]
+
                     if isinstance(output, list):
                         output = [tens.to(opt.device) for tens in output]
                         output = torch.cat(output).detach()
                     else:
                         output = output.to(opt.device)
+                    
                     reshaped_output = output.permute(0, 2, 3, 1).contiguous()
                     shape = reshaped_output.shape
                     reshaped_output = reshaped_output.view(-1, shape[3])
                     reshaped_output = reshaped_output[:, :opt.num_transforms]
+
                     m = nn.Softmax(dim=1)
                     score_softmax = m(reshaped_output)
+
+
+                    if scale_num == opt.stop_scale:
+                        print("visualizing...")
+                        visualization = torch.zeros(opt.num_transforms, image_width, image_width)
+                        output_softmax = score_softmax.view(opt.num_transforms, image_width, image_width, opt.num_transforms)
+                        output_softmax = output_softmax.permute(0, 3, 1, 2).contiguous()
+
+                        for ith in range(opt.num_transforms):
+                            ith_map = output_softmax[ith, ith, :, :]
+                            ith_map_reshaped = ith_map.reshape(image_width*image_width)
+                            num_patches = int(ith_map_reshaped.shape[0] * opt.fraction_defect)
+                            # getting least confident values and their indices
+                            smallest_values, smallest_indices = torch.topk(ith_map_reshaped, k=num_patches, largest=False)
+                            ith_map_mask = torch.zeros_like(ith_map_reshaped)
+                            ith_map_mask[smallest_indices] = smallest_values
+                            visualization[ith, :, :] = ith_map_mask.reshape(image_width, image_width)
+                        
+                        visualization_flattened = visualization.sum(dim=0)
+                        visualization_flattened = np.uint8(visualization_flattened.cpu().numpy() * 255)
+                        im = Image.fromarray(visualization_flattened)
+
+                        real_im = np.uint8(real.squeeze().permute(1, 2, 0).cpu().numpy() * 255)
+                        real_im = Image.fromarray(real_im)
+
+                        if not os.path.exists(f"mvtec_visualizations/{input_name_model}"):
+                            os.makedirs(f"mvtec_visualizations/{input_name_model}")
+                            os.makedirs(f"mvtec_visualizations/{input_name_model}/defect_prediction")
+                            os.makedirs(f"mvtec_visualizations/{input_name_model}/real_image")
+
+                        defect_vis_path = f"mvtec_visualizations/{input_name_model}/defect_prediction/{opt.pos_class}_{opt.num_images}_defect_prediction_{i}.png"
+                        im.save(defect_vis_path)
+
+                        real_vis_path = f"mvtec_visualizations/{input_name_model}/real_image/{opt.pos_class}_{opt.num_images}_real_image_{i}.png"
+                        real_im.save(real_vis_path)
+
+
                     score_all = score_softmax.reshape(opt.num_transforms, -1, opt.num_transforms)
+
+
                     for j in range(opt.num_transforms):
+
+                        # the transformed image out of M transformations
                         current_transform = score_all[j]
+
+                        # all softmax probability score corresponding to that transformation
+                        # here the HxH has been flattned to a vector 
+                        # each column corresponds to M transform predicted probability
+                        # each row is a patch
+                        # so to get score of a transform for each patch we do [:, j]
                         score_transform = current_transform[:, j]
+
+                        # also we dont count the predicted probability score of other transforms
+                        # so when considering transformation number 25
+                        # we will only torch.mean() the scores for the 25th index of the softmax vector for all patches
+
                         sorted_score_transform, indices = torch.sort(score_transform, descending=False, dim=0)
                         num_patches = int(sorted_score_transform.shape[0] * opt.fraction_defect)
-
-                        # make patch mask for visualizing defect detection on the input image
-                        # then compute intersection over union with the ground truth mask (0 and 1)
-                        # "real/reals/real_transform" is the input image to the discriminator
 
                         score_transform = torch.mean(sorted_score_transform[:num_patches])
                         score_image_in_scale += score_transform
