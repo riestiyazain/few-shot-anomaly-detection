@@ -176,6 +176,7 @@ cifar_test_*/
 cifar_train*
 
 mvtec_data/
+mvtec_test_*/
 mvtec_anomaly_detection*
 mvtec_visualizations
 .vscode/launch.json

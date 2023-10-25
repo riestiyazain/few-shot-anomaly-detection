@@ -21,6 +21,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms as T
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
+from evaluate_model import precision_recall_f1, compute_confusion_matrix
 
 
 def defect_detection(input_name_model,test_size, opt):
@@ -200,22 +201,51 @@ def defect_detection(input_name_model,test_size, opt):
             avg_err_total = np.mean(err_total)
             probs_predictions.append(avg_err_total)
 
+        export_dir = "testing_summary/"
+        path = export_dir +"mvtec_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(opt.num_images)
+        if (os.path.exists(export_dir)==False):
+            os.mkdir(export_dir)
 
-        with open(opt.input_name + "_fraction_" + str(opt.fraction_defect) + ".txt", "w") as text_file:
+        
+        with open(export_dir+opt.input_name + "_fraction_" + str(opt.fraction_defect) + ".txt", "w") as text_file:
             print(pos_class, "results: ", file=text_file)
             print(" ", file=text_file)
             print("results without norm, without top_k: ", file=text_file)
             auc1 = roc_auc_score(yTest_input, probs_predictions)
             print("roc_auc_score (not normal) all ={}".format(auc1), file=text_file)
+            
+            precision,recall,f1 = precision_recall_f1(yTest_input,probs_predictions)
+            print("average (precision score) = {}".format(np.mean(precision)), file=text_file)
+            print("recall score = {}".format(np.mean(recall)), file=text_file)
+            print("f1 score = {}".format(f1), file=text_file)
+
             scores_per_scale_dict_norm = compute_normalized_dict(scores_per_scale_dict)
             scores_per_scale_dict_norm = scores_per_scale_dict_norm.cpu().clone().numpy()
+            
             print(" ", file=text_file)
             print("results with normalization ", file=text_file)
+
             probs_predictions_norm_all = np.mean(scores_per_scale_dict_norm, axis=0)
             auc1 = roc_auc_score(yTest_input, probs_predictions_norm_all)
             print("roc_auc_score T1 normalize all ={}".format(auc1), file=text_file)
 
-    path = "mvtec_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(opt.num_images)
+            precision_norm, recall_norm, f1_norm = precision_recall_f1(yTest_input,probs_predictions_norm_all)
+            print("average (precision score)  normalize all = {}".format(np.mean(precision_norm)), file=text_file)
+            print("recall score normalize all  = {}".format(np.mean(recall_norm)), file=text_file)
+            print("f1 score normalize all = {}".format(f1_norm), file=text_file)
+
+            conf_matrix = compute_confusion_matrix(yTest_input,probs_predictions_norm_all, opt.threshold, path)
+            print("confusion matrix = {}".format(conf_matrix), file=text_file)
+
+        with open(path + '_score.npy', 'wb') as f:
+            np.save(f,probs_predictions)
+
+        with open(path + '_normalized_score.npy', 'wb') as f:
+            np.save(f,probs_predictions_norm_all)
+            
+        with open(path + '_test_input.npy', 'wb') as f:
+            np.save(f,yTest_input)
+   
     # os.remove(path + "/mvtec_data_test_" + str(pos_class) + str(scale) + "_" + str(opt.index_download) + ".npy")
     # os.remove(path + "/mvtec_labels_test_" + str(pos_class) + str(scale) + "_" + str(opt.index_download) + ".npy")
     del xTest_input, yTest_input
