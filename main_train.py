@@ -85,6 +85,7 @@ if __name__ == '__main__':
         train(opt, Gs, Zs, reals, NoiseAmp)
     if dataset == 'mvtec':
         print("in mvtec eval conditional")
+        print("model name ", opt.input_name)
         defect_detection(opt.input_name, opt.test_size, opt)
     else:
         anomaly_detection(opt.input_name, opt.test_size, opt)
