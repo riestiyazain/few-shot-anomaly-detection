@@ -31,7 +31,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_transforms', help='54 for rgb, 42 for grayscale', type=int, default=54)
     parser.add_argument('--device_ids', help='gpus ids in format: 0/ 0 1/ 0 1 2..', nargs='+', type=int, default=0)
     parser.add_argument('--fraction_defect', help='fraction of patches to consider in each scale', nargs='+', type=float, default=0.1)
-
+    parser.add_argument('--threshold', type=float, help='thresholding for binary classification', default=0.5)
 
     opt = parser.parse_args()
     scale = opt.size_image

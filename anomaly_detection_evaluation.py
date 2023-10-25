@@ -4,7 +4,7 @@ from FewShot_models.training_parallel import *
 from FewShot_models.imresize import imresize, imresize_to_shape
 import FewShot_models.functions as functions
 import FewShot_models.models as models
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, precision_recall_curve, average_precision_score, precision_recall_fscore_support
 import numpy as np
 import torch
 import torch.nn as nn
@@ -12,6 +12,7 @@ import torch.utils.data
 from torchvision import datasets, transforms
 import torchvision
 import os, sys
+from evaluate_model import precision_recall_f1, compute_confusion_matrix
 
 
 def anomaly_detection(input_name_model,test_size, opt):
@@ -137,17 +138,34 @@ def anomaly_detection(input_name_model,test_size, opt):
                     with open(opt.input_name + ".txt", "w") as text_file:
                         auc1 = roc_auc_score(yTest_input[:i], probs_predictions[:i])
                         print("roc_auc_score  all ={}".format(auc1), file=text_file)
+                         # compute precision and recall score
+                        precision, recall, _ = precision_recall_curve(yTest_input[:i],probs_predictions[:i])
+                        average_precision= average_precision_score(yTest_input[:i],probs_predictions[:i])
+                        print("average precision score all= {}".format(average_precision), file=text_file)
+                        print("average (precision score) all= {}".format(np.mean(precision)), file=text_file)
+                        print("recall score all= {}".format(np.mean(recall)), file=text_file)
+
                 except:
                     pass
-
-        with open(opt.input_name + ".txt", "w") as text_file:
+        export_dir = "testing_summary/"
+        path = export_dir + str(data) + "_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(num_images)
+        if (os.path.exists(export_dir)==False):
+            os.mkdir(export_dir)
+        
+        with open(export_dir + opt.input_name + ".txt", "w") as text_file:
 
             print(pos_class, "results: ", file=text_file)
             print(" ", file=text_file)
             print("results without norm, without top_k: ", file=text_file)
             auc1 = roc_auc_score(yTest_input, probs_predictions)
             print("roc_auc_score (not normal) all ={}".format(auc1), file=text_file)
+            
+            precision,recall,f1 = precision_recall_f1(yTest_input,probs_predictions)
+            print("average (precision score) = {}".format(np.mean(precision)), file=text_file)
+            print("recall score = {}".format(np.mean(recall)), file=text_file)
+            print("f1 score = {}".format(f1), file=text_file)
 
+            # compute normalized score
             scores_per_scale_dict_norm = compute_normalized_dict(scores_per_scale_dict)
             scores_per_scale_dict_norm = scores_per_scale_dict_norm.cpu().clone().numpy()
 
@@ -158,7 +176,24 @@ def anomaly_detection(input_name_model,test_size, opt):
             auc1 = roc_auc_score(yTest_input, probs_predictions_norm_all)
             print("roc_auc_score T1 normalize all ={}".format(auc1), file=text_file)
 
-    path = str(data) + "_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(num_images)
-    os.remove(path + "/" + str(data) + "_data_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
-    os.remove(path + "/" + str(data) + "_labels_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
+            precision_norm, recall_norm, f1_norm = precision_recall_f1(yTest_input,probs_predictions_norm_all)
+            print("average (precision score)  normalize all = {}".format(np.mean(precision_norm)), file=text_file)
+            print("recall score normalize all  = {}".format(np.mean(recall_norm)), file=text_file)
+            print("f1 score normalize all = {}".format(f1_norm), file=text_file)
+
+            conf_matrix = compute_confusion_matrix(yTest_input,probs_predictions_norm_all, opt.threshold, path)
+            print("confusion matrix = {}".format(conf_matrix), file=text_file)
+        
+        with open(path + '_score.npy', 'wb') as f:
+            np.save(f,probs_predictions)
+
+        with open(path + '_normalized_score.npy', 'wb') as f:
+            np.save(f,probs_predictions_norm_all)
+            
+        with open(path + '_test_input.npy', 'wb') as f:
+            np.save(f,yTest_input)
+
+    
+    # os.remove(path + "/" + str(data) + "_data_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
+    # os.remove(path + "/" + str(data) + "_labels_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
     del xTest_input, yTest_input
