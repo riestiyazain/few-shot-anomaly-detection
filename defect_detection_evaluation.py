@@ -23,7 +23,6 @@ from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 
 
-
 def defect_detection(input_name_model,test_size, opt):
     scale = int(opt.size_image)
     pos_class = opt.pos_class
@@ -61,7 +60,7 @@ def defect_detection(input_name_model,test_size, opt):
     transformations_list = np.load("TrainedModels/" + str(opt.input_name)[:-4] +  "/transformations.npy")
 
     with torch.no_grad():
-        for i in range(batch_n):
+        for i in tqdm(range(batch_n)):
             reals = {}
             real = torch.from_numpy(xTest_input[i]).unsqueeze(0).to(opt.device)
             real = functions.norm(real)
@@ -113,27 +112,46 @@ def defect_detection(input_name_model,test_size, opt):
                     m = nn.Softmax(dim=1)
                     score_softmax = m(reshaped_output)
 
-
+                    # visualization happens inside this if block
                     if scale_num == opt.stop_scale:
-                        print("visualizing...")
+                        print(f"visualizing... image {i} of {int(batch_n)}")
                         visualization = torch.zeros(opt.num_transforms, image_width, image_width)
+
+                        # reshape scores back to be 54, C, H, W
                         output_softmax = score_softmax.view(opt.num_transforms, image_width, image_width, opt.num_transforms)
                         output_softmax = output_softmax.permute(0, 3, 1, 2).contiguous()
 
+                        # loop over each transform
                         for ith in range(opt.num_transforms):
+                            # get the score for the transform so indexing the channel which corresponds to transform patch score and the
+                            # first dimension which corresponds to the transformation image given to discriminator
                             ith_map = output_softmax[ith, ith, :, :]
+                            # reshape the 2D score map to vector
                             ith_map_reshaped = ith_map.reshape(image_width*image_width)
+                            # get fraction of patches
                             num_patches = int(ith_map_reshaped.shape[0] * opt.fraction_defect)
-                            # getting least confident values and their indices
+                            # getting least confident patche scores and their indices
                             smallest_values, smallest_indices = torch.topk(ith_map_reshaped, k=num_patches, largest=False)
+
+                            # create zero mask
+                            # everything else must be zero except the selected patches
                             ith_map_mask = torch.zeros_like(ith_map_reshaped)
+
+                            # put in the selected values at their index locations
                             ith_map_mask[smallest_indices] = smallest_values
+
+                            # reshape vector back to 2D score map and append channel wise to result tensor
+                            # each channel corresponds to the score of each transform
                             visualization[ith, :, :] = ith_map_mask.reshape(image_width, image_width)
-                        
+
+                        # sum all the score channel wise to get one aggregated score map
                         visualization_flattened = visualization.sum(dim=0)
+
+                        # convert to 8 bit image
                         visualization_flattened = np.uint8(visualization_flattened.cpu().numpy() * 255)
                         im = Image.fromarray(visualization_flattened)
 
+                        # save real ground truth image as well
                         real_im = np.uint8(real.squeeze().permute(1, 2, 0).cpu().numpy() * 255)
                         real_im = Image.fromarray(real_im)
 
@@ -147,7 +165,6 @@ def defect_detection(input_name_model,test_size, opt):
 
                         real_vis_path = f"mvtec_visualizations/{input_name_model}/real_image/{opt.pos_class}_{opt.num_images}_real_image_{i}.png"
                         real_im.save(real_vis_path)
-
 
                     score_all = score_softmax.reshape(opt.num_transforms, -1, opt.num_transforms)
 
