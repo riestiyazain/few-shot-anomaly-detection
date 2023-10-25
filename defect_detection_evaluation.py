@@ -160,12 +160,20 @@ def defect_detection(input_name_model,test_size, opt):
                             os.makedirs(f"mvtec_visualizations/{input_name_model}")
                             os.makedirs(f"mvtec_visualizations/{input_name_model}/defect_prediction")
                             os.makedirs(f"mvtec_visualizations/{input_name_model}/real_image")
+                            os.makedirs(f"mvtec_visualizations/{input_name_model}/both")
 
                         defect_vis_path = f"mvtec_visualizations/{input_name_model}/defect_prediction/{opt.pos_class}_{opt.num_images}_defect_prediction_{i}.png"
                         im.save(defect_vis_path)
 
                         real_vis_path = f"mvtec_visualizations/{input_name_model}/real_image/{opt.pos_class}_{opt.num_images}_real_image_{i}.png"
                         real_im.save(real_vis_path)
+
+                        both_im = Image.new('RGB', (real_im.width + im.width, real_im.height))
+                        both_im.paste(real_im, (0, 0))
+                        both_im.paste(im, (real_im.width, 0))
+
+                        both_vis_path = f"mvtec_visualizations/{input_name_model}/both/{opt.pos_class}_{opt.num_images}_both_image_{i}.png"
+                        both_im.save(both_vis_path)
 
                     score_all = score_softmax.reshape(opt.num_transforms, -1, opt.num_transforms)
 
