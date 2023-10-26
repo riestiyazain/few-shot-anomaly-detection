@@ -1,0 +1,15 @@
+metal_nut results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.5532746823069403
+average (precision score) = 0.22385192040823013
+recall score = 0.5427115987460817
+f1 score = 0.3169653409574151
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.5884652981427174
+average (precision score)  normalize all = 0.22779017423767475
+recall score normalize all  = 0.5709247648902822
+f1 score normalize all = 0.32565073044195614
+confusion matrix = [[90  3]
+ [22  0]]

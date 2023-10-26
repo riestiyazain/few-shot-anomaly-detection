@@ -1,0 +1,15 @@
+wood results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.8342105263157895
+average (precision score) = 0.4245057540915257
+recall score = 0.7506578947368421
+f1 score = 0.5423220774191259
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.8473684210526315
+average (precision score)  normalize all = 0.4457309385141919
+recall score normalize all  = 0.7605263157894736
+f1 score normalize all = 0.5620527583019943
+confusion matrix = [[58  2]
+ [15  4]]

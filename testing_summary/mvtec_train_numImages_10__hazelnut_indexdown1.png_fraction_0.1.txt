@@ -1,0 +1,15 @@
+hazelnut results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.5575000000000001
+average (precision score) = 0.39055969291015663
+recall score = 0.5362612612612612
+f1 score = 0.4519579160897448
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.6025
+average (precision score)  normalize all = 0.4193121926545875
+recall score normalize all  = 0.5646396396396396
+f1 score normalize all = 0.4812436495086397
+confusion matrix = [[20 50]
+ [ 6 34]]

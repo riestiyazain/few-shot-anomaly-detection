@@ -1,0 +1,15 @@
+screw results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.8753843000614879
+average (precision score) = 0.536365983730354
+recall score = 0.777457960915013
+f1 score = 0.634791298658718
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.6782127485140398
+average (precision score)  normalize all = 0.3610518757791488
+recall score normalize all  = 0.6317224662929859
+f1 score normalize all = 0.4594892751777828
+confusion matrix = [[119   0]
+ [ 41   0]]
