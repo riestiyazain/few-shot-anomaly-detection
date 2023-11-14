@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "args": ["--num_images", "1", "--pos_class", "bottle", "--dataset", "mvtec"]
+            "args": ["--num_images", "1", "--pos_class", "biscuit", "--dataset", "biscuit", "--add_jiggle_transformation", "1", "--mode", "val"]
         }
     ]
 }

@@ -148,11 +148,11 @@ def anomaly_detection(input_name_model,test_size, opt):
                 except:
                     pass
         export_dir = "testing_summary/"
-        path = export_dir + str(data) + "_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(num_images)
+        export_path = export_dir + opt.input_name.split('.')[0]
         if (os.path.exists(export_dir)==False):
             os.mkdir(export_dir)
         
-        with open(export_dir + opt.input_name + ".txt", "w") as text_file:
+        with open(export_path+ ".txt", "w") as text_file:
 
             print(pos_class, "results: ", file=text_file)
             print(" ", file=text_file)
@@ -181,19 +181,19 @@ def anomaly_detection(input_name_model,test_size, opt):
             print("recall score normalize all  = {}".format(np.mean(recall_norm)), file=text_file)
             print("f1 score normalize all = {}".format(f1_norm), file=text_file)
 
-            conf_matrix = compute_confusion_matrix(yTest_input,probs_predictions_norm_all, opt.threshold, path)
+            conf_matrix = compute_confusion_matrix(yTest_input,probs_predictions_norm_all, opt.threshold, export_path)
             print("confusion matrix = {}".format(conf_matrix), file=text_file)
         
-        with open(path + '_score.npy', 'wb') as f:
+        with open(export_path + '_score.npy', 'wb') as f:
             np.save(f,probs_predictions)
 
-        with open(path + '_normalized_score.npy', 'wb') as f:
+        with open(export_path + '_normalized_score.npy', 'wb') as f:
             np.save(f,probs_predictions_norm_all)
             
-        with open(path + '_test_input.npy', 'wb') as f:
+        with open(export_path + '_test_input.npy', 'wb') as f:
             np.save(f,yTest_input)
 
-    
+    path = export_dir + str(data) + "_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(num_images)
     # os.remove(path + "/" + str(data) + "_data_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
     # os.remove(path + "/" + str(data) + "_labels_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
     del xTest_input, yTest_input

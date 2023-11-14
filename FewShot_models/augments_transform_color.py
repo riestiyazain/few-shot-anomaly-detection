@@ -10,7 +10,9 @@ from kornia.geometry.transform.imgwarp import (
 import itertools
 import cv2
 import kornia
-def apply_transform(x, is_flip, tx, ty, k_rotate, flag_color, channels_first=True):
+import numpy as np
+
+def apply_transform(x, is_flip, tx, ty, k_rotate, flag_color, jiggle, channels_first=True):
     if not channels_first:
         x = x.permute(0, 3, 1, 2)
     if is_flip == True:
@@ -23,6 +25,9 @@ def apply_transform(x, is_flip, tx, ty, k_rotate, flag_color, channels_first=Tru
         x = x.permute(0, 2, 3, 1)
     if flag_color != 0:
         x = color_transform(x,flag_color)
+    if jiggle != 0:
+        x = color_jiggle(x)
+    
     x = x.contiguous()
     return x
 
@@ -32,8 +37,15 @@ def color_transform(x, flag):
     elif flag == 1: #gray
         # x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
         x = kornia.rgb_to_grayscale(x)
-        x = x.repeat(1, 3, 1,1)
+        x = x.repeat(1, 3, 1, 1)
     return x
+
+def color_jiggle(x):
+    aug = kornia.augmentation.ColorJiggle(brightness=np.random.rand(), contrast=np.random.rand(), saturation=np.random.rand(), hue=np.random.rand(), keepdim=True)
+    x = aug(x)
+
+    return x
+
 def affine(tensor: torch.Tensor, matrix: torch.Tensor, mode: str = 'bilinear',
            align_corners: bool = False) -> torch.Tensor:
 

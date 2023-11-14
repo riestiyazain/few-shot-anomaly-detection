@@ -80,7 +80,7 @@ def download_class_paris(opt):
             os.mkdir(path_transform)
 
         np.save(path_transform + "/transformations.npy", lst)
-
+    scale = 450
     path =  "paris_test_scale" + str(scale) +"_" + str(pos_class) + "_" + str(num_images)
     if os.path.exists(path) == False:
         os.mkdir(path)

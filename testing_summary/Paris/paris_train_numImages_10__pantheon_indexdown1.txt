@@ -1,0 +1,15 @@
+pantheon results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7835572192074235
+average (precision score) = 0.05418911228166699
+recall score = 0.7770368557944978
+f1 score = 0.101312853646996
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.7496116498210509
+average (precision score)  normalize all = 0.047310139479477514
+recall score normalize all  = 0.743903174773422
+f1 score normalize all = 0.08896251446675592
+confusion matrix = [[3481 1558]
+ [  39   77]]

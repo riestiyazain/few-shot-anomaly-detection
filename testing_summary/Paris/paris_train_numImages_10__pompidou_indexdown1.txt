@@ -1,0 +1,15 @@
+pompidou results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7761167335959633
+average (precision score) = 0.015745843562191424
+recall score = 0.7740156658953836
+f1 score = 0.030863822670326863
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.7270214714270724
+average (precision score)  normalize all = 0.01313532850481634
+recall score normalize all  = 0.7253442324469901
+f1 score normalize all = 0.025803381098280273
+confusion matrix = [[3981 1133]
+ [  23   18]]

@@ -1,0 +1,15 @@
+eiffel results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.561572518163722
+average (precision score) = 0.06552778518289042
+recall score = 0.5582463410265683
+f1 score = 0.11728811689005532
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.5452185527240437
+average (precision score)  normalize all = 0.0624132240987422
+recall score normalize all  = 0.5428240160091864
+f1 score normalize all = 0.11195410563738295
+confusion matrix = [[4032  844]
+ [ 225   54]]

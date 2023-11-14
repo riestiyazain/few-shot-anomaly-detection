@@ -1,0 +1,15 @@
+sacrecoeur results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.8211536034330431
+average (precision score) = 0.061659750157396644
+recall score = 0.8125048085195077
+f1 score = 0.11462108134611078
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.803681456748477
+average (precision score)  normalize all = 0.05822819550540759
+recall score normalize all  = 0.7955486310795843
+f1 score normalize all = 0.10851398112982165
+confusion matrix = [[3691 1325]
+ [  35  104]]

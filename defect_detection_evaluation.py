@@ -25,13 +25,14 @@ from evaluate_model import precision_recall_f1, compute_confusion_matrix
 
 
 def defect_detection(input_name_model,test_size, opt):
+    dataset = opt.dataset
     scale = int(opt.size_image)
     pos_class = opt.pos_class
     alpha = int(opt.alpha)
-    path =  "mvtec_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(opt.num_images)
+    path =  dataset + "_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(opt.num_images)
     if os.path.exists(path)==True:
-        xTest_input = np.load(path + "/mvtec_data_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
-        yTest_input = np.load(path + "/mvtec_labels_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
+        xTest_input = np.load(path  +"/"+dataset+"_data_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
+        yTest_input = np.load(path +"/"+dataset+"_labels_test_" + str(pos_class) + str(scale) +  "_" + str(opt.index_download) + ".npy")
     else:
         if os.path.exists(path) == False:
             print("path not exists")
@@ -42,8 +43,6 @@ def defect_detection(input_name_model,test_size, opt):
     num_samples = xTest_input.shape[0]
     batch_size = 1
     batch_n = num_samples // batch_size
-    opt.input_name = input_name_model
-    opt.num_images = 1
     path = "TrainedModels/" + str(opt.input_name)[:-4] + \
            "/scale_factor=0.750000,alpha=" + str(alpha)
     probs_predictions = []
@@ -64,6 +63,7 @@ def defect_detection(input_name_model,test_size, opt):
         for i in tqdm(range(batch_n)):
             reals = {}
             real = torch.from_numpy(xTest_input[i]).unsqueeze(0).to(opt.device)
+            real_untouched = torch.from_numpy(xTest_input[i]).unsqueeze(0).to(opt.device)
             real = functions.norm(real)
             real = real[:, 0:3, :, :]
             functions.adjust_scales2image(real, opt)
@@ -84,13 +84,17 @@ def defect_detection(input_name_model,test_size, opt):
                 netD.eval()
 
                 err_scale = []
-                for index_image in range(int(opt.num_images)):
+                for index_image in range(1):
                     score_image_in_scale = 0
                     reals_transform = []
                     for index_transform, pair in enumerate(transformations_list):
                         real = reals[index_image][scale_num].to(opt.device)
-                        flag_color, is_flip, tx, ty, k_rotate = pair
-                        real_augment = apply_augmentation(real, is_flip, tx, ty, k_rotate, flag_color).to(opt.device)
+                        if opt.dataset == "biscuit" and opt.add_jiggle_transformation:
+                            flag_color, is_flip, tx, ty, k_rotate, jiggle = pair
+                            real_augment = apply_augmentation(real, is_flip, tx, ty, k_rotate, flag_color, jiggle).to(opt.device)
+                        else:
+                            flag_color, is_flip, tx, ty, k_rotate = pair
+                            real_augment = apply_augmentation(real, is_flip, tx, ty, k_rotate, flag_color).to(opt.device)
                         real_augment = torch.squeeze(real_augment)
                         reals_transform.append(real_augment)
                     real_transform = torch.stack(reals_transform)
@@ -132,7 +136,7 @@ def defect_detection(input_name_model,test_size, opt):
                             # get fraction of patches
                             num_patches = int(ith_map_reshaped.shape[0] * opt.fraction_defect)
                             # getting least confident patche scores and their indices
-                            smallest_values, smallest_indices = torch.topk(ith_map_reshaped, k=num_patches, largest=False)
+                            smallest_values, smallest_indices = torch.topk(ith_map_reshaped, k=num_patches, largest=True) # default False
 
                             # create zero mask
                             # everything else must be zero except the selected patches
@@ -148,31 +152,41 @@ def defect_detection(input_name_model,test_size, opt):
                         # sum all the score channel wise to get one aggregated score map
                         visualization_flattened = visualization.sum(dim=0)
 
+                        # normalize the value
+                        visualization_flattened = (visualization_flattened - visualization_flattened.min()) / (visualization_flattened.max() - visualization_flattened.min())
                         # convert to 8 bit image
                         visualization_flattened = np.uint8(visualization_flattened.cpu().numpy() * 255)
+                        # Get the color map by name:
+                        cm = plt.get_cmap('turbo')
+                        # Apply the colormap like a function to any array:
+                        visualization_flattened = cm(visualization_flattened)
+                        # Obtain a 4-channel image (R,G,B,A) in float [0, 1]
+                        # # But we want to convert to RGB in uint8 and save it:
+                        visualization_flattened = (visualization_flattened[:, :, :3] * 255).astype(np.uint8)
                         im = Image.fromarray(visualization_flattened)
 
                         # save real ground truth image as well
-                        real_im = np.uint8(real.squeeze().permute(1, 2, 0).cpu().numpy() * 255)
+                        real_im = np.uint8(real_untouched.squeeze().permute(1, 2, 0).cpu().numpy() * 255)
                         real_im = Image.fromarray(real_im)
+                        real_im = real_im.resize(im.size)
 
-                        if not os.path.exists(f"mvtec_visualizations/{input_name_model}"):
-                            os.makedirs(f"mvtec_visualizations/{input_name_model}")
-                            os.makedirs(f"mvtec_visualizations/{input_name_model}/defect_prediction")
-                            os.makedirs(f"mvtec_visualizations/{input_name_model}/real_image")
-                            os.makedirs(f"mvtec_visualizations/{input_name_model}/both")
+                        if not os.path.exists(f"{dataset}/{input_name_model}"):
+                            os.makedirs(f"{dataset}/{input_name_model}")
+                            os.makedirs(f"{dataset}/{input_name_model}/defect_prediction")
+                            os.makedirs(f"{dataset}/{input_name_model}/real_image")
+                            os.makedirs(f"{dataset}/{input_name_model}/both")
 
-                        defect_vis_path = f"mvtec_visualizations/{input_name_model}/defect_prediction/{opt.pos_class}_{opt.num_images}_defect_prediction_{i}.png"
+                        defect_vis_path = f"{dataset}/{input_name_model}/defect_prediction/{opt.pos_class}_{opt.num_images}_defect_prediction_{i}.png"
                         im.save(defect_vis_path)
 
-                        real_vis_path = f"mvtec_visualizations/{input_name_model}/real_image/{opt.pos_class}_{opt.num_images}_real_image_{i}.png"
+                        real_vis_path = f"{dataset}/{input_name_model}/real_image/{opt.pos_class}_{opt.num_images}_real_image_{i}.png"
                         real_im.save(real_vis_path)
 
                         both_im = Image.new('RGB', (real_im.width + im.width, real_im.height))
                         both_im.paste(real_im, (0, 0))
                         both_im.paste(im, (real_im.width, 0))
 
-                        both_vis_path = f"mvtec_visualizations/{input_name_model}/both/{opt.pos_class}_{opt.num_images}_both_image_{i}.png"
+                        both_vis_path = f"{dataset}/{input_name_model}/both/{opt.pos_class}_{opt.num_images}_both_image_{i}.png"
                         both_im.save(both_vis_path)
 
                     score_all = score_softmax.reshape(opt.num_transforms, -1, opt.num_transforms)
@@ -210,12 +224,16 @@ def defect_detection(input_name_model,test_size, opt):
             probs_predictions.append(avg_err_total)
 
         export_dir = "testing_summary/"
-        path = export_dir +"mvtec_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(opt.num_images)
+        export_path = export_dir + opt.input_name.split('.')[0]
+        
         if (os.path.exists(export_dir)==False):
             os.mkdir(export_dir)
 
+        probs_predictions = np.array(probs_predictions)
+        probs_predictions = (probs_predictions - probs_predictions.min()) / (probs_predictions.max() - probs_predictions.min())
+        probs_predictions = list(probs_predictions)
         
-        with open(export_dir+opt.input_name + "_fraction_" + str(opt.fraction_defect) + ".txt", "w") as text_file:
+        with open(export_path+ "_fraction_" + str(opt.fraction_defect) + ".txt", "w") as text_file:
             print(pos_class, "results: ", file=text_file)
             print(" ", file=text_file)
             print("results without norm, without top_k: ", file=text_file)
@@ -242,18 +260,18 @@ def defect_detection(input_name_model,test_size, opt):
             print("recall score normalize all  = {}".format(np.mean(recall_norm)), file=text_file)
             print("f1 score normalize all = {}".format(f1_norm), file=text_file)
 
-            conf_matrix = compute_confusion_matrix(yTest_input,probs_predictions_norm_all, opt.threshold, path)
+            conf_matrix = compute_confusion_matrix(yTest_input,probs_predictions_norm_all, opt.threshold, export_path)
             print("confusion matrix = {}".format(conf_matrix), file=text_file)
 
-        with open(path + '_score.npy', 'wb') as f:
+        with open(export_path + '_score.npy', 'wb') as f:
             np.save(f,probs_predictions)
 
-        with open(path + '_normalized_score.npy', 'wb') as f:
+        with open(export_path + '_normalized_score.npy', 'wb') as f:
             np.save(f,probs_predictions_norm_all)
             
-        with open(path + '_test_input.npy', 'wb') as f:
+        with open(export_path + '_test_input.npy', 'wb') as f:
             np.save(f,yTest_input)
-   
+    path = export_dir + dataset +"_test_scale" + str(scale) + "_" + str(pos_class) + "_" + str(opt.num_images)
     # os.remove(path + "/mvtec_data_test_" + str(pos_class) + str(scale) + "_" + str(opt.index_download) + ".npy")
     # os.remove(path + "/mvtec_labels_test_" + str(pos_class) + str(scale) + "_" + str(opt.index_download) + ".npy")
     del xTest_input, yTest_input

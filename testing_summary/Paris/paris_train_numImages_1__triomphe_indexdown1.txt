@@ -1,0 +1,15 @@
+triomphe results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.49033908096408096
+average (precision score) = 0.05039645326628884
+recall score = 0.4906786476967025
+f1 score = 0.09140492139964156
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.489370904995905
+average (precision score)  normalize all = 0.049693990549987736
+recall score normalize all  = 0.48979789858889416
+f1 score normalize all = 0.09023309760126712
+confusion matrix = [[4271  613]
+ [ 255   25]]

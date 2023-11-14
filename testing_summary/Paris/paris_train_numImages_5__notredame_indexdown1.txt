@@ -1,0 +1,15 @@
+notredame results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7021794229926779
+average (precision score) = 0.03796751088743193
+recall score = 0.6977544405018764
+f1 score = 0.07201633515618916
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.6962914867430169
+average (precision score)  normalize all = 0.037380002596094704
+recall score normalize all  = 0.6921153145049457
+f1 score normalize all = 0.07092923462703575
+confusion matrix = [[4374  672]
+ [  82   32]]

@@ -7,6 +7,7 @@ from Dataloaders.mnist_loader import download_class_mnist
 from Dataloaders.fashionmnist_loader import download_class_FashionMnist
 from Dataloaders.paris_loader import download_class_paris
 from Dataloaders.mvtec_loader import download_class_mvtec
+from Dataloaders.biscuit_loader import download_class_biscuit
 from anomaly_detection_evaluation import anomaly_detection
 from defect_detection_evaluation import defect_detection
 
@@ -30,8 +31,9 @@ if __name__ == '__main__':
     parser.add_argument('--test_size', help='test size', type=int, default=10000)
     parser.add_argument('--num_transforms', help='54 for rgb, 42 for grayscale', type=int, default=54)
     parser.add_argument('--device_ids', help='gpus ids in format: 0/ 0 1/ 0 1 2..', nargs='+', type=int, default=0)
-    parser.add_argument('--fraction_defect', help='fraction of patches to consider in each scale', nargs='+', type=float, default=0.1)
+    parser.add_argument('--fraction_defect', help='fraction of patches to consider in each scale', type=float, default=0.1)
     parser.add_argument('--threshold', type=float, help='thresholding for binary classification', default=0.5)
+    parser.add_argument('--add_jiggle_transformation', type=int, default=0, help='whether to use color jiggle transformation with biscuit dataset.')
 
     opt = parser.parse_args()
     scale = opt.size_image
@@ -58,6 +60,9 @@ if __name__ == '__main__':
         elif dataset == 'mvtec':
             opt.num_transforms, opt.niter = 54, opt.niter_rgb
             opt.input_name = download_class_mvtec(opt)
+        elif dataset == 'biscuit':
+            opt.num_transforms, opt.niter = 54, opt.niter_rgb
+            opt.input_name = download_class_biscuit(opt)
 
 
     opt = functions.post_config(opt)
@@ -83,8 +88,7 @@ if __name__ == '__main__':
     if opt.mode == 'train':
         print("in train conditional")
         train(opt, Gs, Zs, reals, NoiseAmp)
-    if dataset == 'mvtec':
-        print("in mvtec eval conditional")
+    if dataset == 'mvtec' or dataset == 'biscuit':
         print("model name ", opt.input_name)
         defect_detection(opt.input_name, opt.test_size, opt)
     else:

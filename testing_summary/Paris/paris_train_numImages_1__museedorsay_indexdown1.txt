@@ -1,0 +1,15 @@
+museedorsay results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7411608863864515
+average (precision score) = 0.02463245238601093
+recall score = 0.7378827593935435
+f1 score = 0.04767344088730001
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.7266062505012403
+average (precision score)  normalize all = 0.022454165746713283
+recall score normalize all  = 0.7234757272530974
+f1 score normalize all = 0.04355648981470461
+confusion matrix = [[3709 1384]
+ [  28   43]]

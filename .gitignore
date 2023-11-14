@@ -175,8 +175,19 @@ cifar_data/
 cifar_test_*/
 cifar_train*
 
+mvtec/
 mvtec_data/
 mvtec_test_*/
 mvtec_anomaly_detection*
 mvtec_visualizations
 .vscode/launch.json
+
+IndustryBiscuit/
+IndustryBiscuit_Folders/
+biscuit/
+biscuit1/
+biscuit_experimental/
+biscuit_test_*/
+
+
+eval_executor.sh

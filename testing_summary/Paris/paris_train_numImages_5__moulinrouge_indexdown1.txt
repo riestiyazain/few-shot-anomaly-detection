@@ -1,0 +1,15 @@
+moulinrouge results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.8002319609270039
+average (precision score) = 0.10327889172222014
+recall score = 0.7868078999544516
+f1 score = 0.1825903915561114
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.8021247341021048
+average (precision score)  normalize all = 0.10268290912553349
+recall score normalize all  = 0.7886114478204673
+f1 score normalize all = 0.18170633977616543
+confusion matrix = [[4043  885]
+ [ 100  132]]

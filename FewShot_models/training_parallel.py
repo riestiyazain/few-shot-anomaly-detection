@@ -118,9 +118,9 @@ def pad_image_id(real,  index_image):
     return padded_id_real
 
 
-def apply_augmentation(real, is_flip, tx, ty, k_rotate,flag_color):
+def apply_augmentation(real, is_flip, tx, ty, k_rotate, flag_color, jiggle=0):
     try:
-        augment = apply_transform(real, is_flip, tx, ty, k_rotate,flag_color)
+        augment = apply_transform(real, is_flip, tx, ty, k_rotate, flag_color, jiggle)
     except:
         augment = real
     return augment
@@ -230,8 +230,13 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt, index_image, z_o
             num_transforms = 0
             for index_transform, pair in enumerate(opt.list_transformations):
                 num_transforms +=1
-                flag_color,is_flip, tx, ty, k_rotate = pair
-                real_transform = apply_augmentation(real, is_flip, tx, ty, k_rotate,flag_color).to(opt.device)
+                if opt.dataset == "biscuit" and opt.add_jiggle_transformation:
+                    flag_color, is_flip, tx, ty, k_rotate, jiggle = pair
+                    real_transform = apply_augmentation(real, is_flip, tx, ty, k_rotate, flag_color, jiggle).to(opt.device)
+                else:
+                    flag_color, is_flip, tx, ty, k_rotate = pair
+                    real_transform = apply_augmentation(real, is_flip, tx, ty, k_rotate, flag_color).to(opt.device)
+                
                 real_transform = torch.squeeze(real_transform)
                 reals_arr.append(real_transform)
             opt.num_transforms = num_transforms
@@ -317,7 +322,11 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt, index_image, z_o
             fakes_arr = []
 
             for index_transform, pair in enumerate(opt.list_transformations):
-                flag_color,is_flip, tx, ty, k_rotate = pair
+                if opt.dataset == "biscuit" and opt.add_jiggle_transformation:
+                    flag_color, is_flip, tx, ty, k_rotate, jiggle = pair
+                else:
+                    flag_color, is_flip, tx, ty, k_rotate = pair
+                
                 fake_transform = apply_augmentation(fake.detach(), is_flip, tx, ty, k_rotate,flag_color).to(opt.device)
                 fake_transform = torch.squeeze(fake_transform)
                 fakes_arr.append(fake_transform)
@@ -356,7 +365,10 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt, index_image, z_o
             fakes_arr_G = []
 
             for index_transform, pair in enumerate(opt.list_transformations):
-                flag_color,is_flip, tx, ty, k_rotate = pair
+                if opt.dataset == "biscuit" and opt.add_jiggle_transformation:
+                    flag_color, is_flip, tx, ty, k_rotate, jiggle = pair
+                else:
+                    flag_color, is_flip, tx, ty, k_rotate = pair
                 fake_transform_G = apply_augmentation(fake, is_flip, tx, ty, k_rotate,flag_color).to(opt.device)
                 fake_transform_G = torch.squeeze(fake_transform_G)
                 fakes_arr_G.append(fake_transform_G)

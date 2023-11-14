@@ -1,0 +1,15 @@
+louvre results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.6696118261534095
+average (precision score) = 0.048615638367527934
+recall score = 0.6651931417431494
+f1 score = 0.09060911023966534
+ 
+results with normalization, without top_k: 
+roc_auc_score T1 normalize all =0.6646149588534598
+average (precision score)  normalize all = 0.047727198400668726
+recall score normalize all  = 0.6603385867303354
+f1 score normalize all = 0.08902028992875258
+confusion matrix = [[3876 1137]
+ [  72   70]]
