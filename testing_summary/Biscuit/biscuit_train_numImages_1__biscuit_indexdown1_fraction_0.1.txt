@@ -1,0 +1,15 @@
+biscuit results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7303
+average (precision score) = 0.671110616347936
+recall score = 0.614862842892768
+f1 score = 0.6417566062473037
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.7409000000000001
+average (precision score)  normalize all = 0.6551522978058298
+recall score normalize all  = 0.6201496259351621
+f1 score normalize all = 0.6371706101140697
+confusion matrix = [[173  27]
+ [121  79]]
