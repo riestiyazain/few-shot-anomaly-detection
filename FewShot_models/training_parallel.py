@@ -230,7 +230,7 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt, index_image, z_o
             num_transforms = 0
             for index_transform, pair in enumerate(opt.list_transformations):
                 num_transforms +=1
-                if opt.dataset == "biscuit" and opt.add_jiggle_transformation:
+                if (opt.dataset == "biscuit" or opt.dataset == "mvtec") and opt.add_jiggle_transformation:
                     flag_color, is_flip, tx, ty, k_rotate, jiggle = pair
                     real_transform = apply_augmentation(real, is_flip, tx, ty, k_rotate, flag_color, jiggle).to(opt.device)
                 else:
@@ -322,7 +322,7 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt, index_image, z_o
             fakes_arr = []
 
             for index_transform, pair in enumerate(opt.list_transformations):
-                if opt.dataset == "biscuit" and opt.add_jiggle_transformation:
+                if (opt.dataset == "biscuit" or opt.dataset == "mvtec") and opt.add_jiggle_transformation:
                     flag_color, is_flip, tx, ty, k_rotate, jiggle = pair
                 else:
                     flag_color, is_flip, tx, ty, k_rotate = pair
@@ -365,7 +365,7 @@ def train_single_scale(netD,netG,reals,Gs,Zs,in_s,NoiseAmp,opt, index_image, z_o
             fakes_arr_G = []
 
             for index_transform, pair in enumerate(opt.list_transformations):
-                if opt.dataset == "biscuit" and opt.add_jiggle_transformation:
+                if (opt.dataset == "biscuit" or opt.dataset == "mvtec") and opt.add_jiggle_transformation:
                     flag_color, is_flip, tx, ty, k_rotate, jiggle = pair
                 else:
                     flag_color, is_flip, tx, ty, k_rotate = pair
