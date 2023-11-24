@@ -89,7 +89,7 @@ def defect_detection(input_name_model,test_size, opt):
                     reals_transform = []
                     for index_transform, pair in enumerate(transformations_list):
                         real = reals[index_image][scale_num].to(opt.device)
-                        if opt.dataset == "biscuit" and opt.add_jiggle_transformation:
+                        if (opt.dataset == "biscuit" or opt.dataset == "mvtec") and opt.add_jiggle_transformation:
                             flag_color, is_flip, tx, ty, k_rotate, jiggle = pair
                             real_augment = apply_augmentation(real, is_flip, tx, ty, k_rotate, flag_color, jiggle).to(opt.device)
                         else:
