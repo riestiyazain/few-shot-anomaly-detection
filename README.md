@@ -1,4 +1,9 @@
-# A Hierarchical Transformation-Discriminating Generative Model for Few Shot Anomaly Detection
+# Improvement of Hierarchical Transformation-Discriminating Generative Model for Few Shot Anomaly Detection
+
+## Changes done
+- Added new gaussian blur transformation that improves performance.
+- Added code for defect visualization.
+- Fixed various bugs.
 
 [Project](https://shellysheynin.github.io/HTDG/) | [Arxiv](https://arxiv.org/abs/2104.14535) 
 
