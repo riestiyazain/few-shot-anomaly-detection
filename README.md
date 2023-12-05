@@ -12,6 +12,8 @@ et al. (2021) who propose an approach for anomaly and defect detection using onl
 
 ### Install dependencies
 
+- Install torch-gpu then
+
 ```
 python -m pip install -r requirements.txt
 ```
