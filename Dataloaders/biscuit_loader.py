@@ -138,10 +138,10 @@ def download_class_biscuit(opt):
         if opt.add_jiggle_transformation:
             genertator0 = itertools.product((0,), (False, True), (-1, 1, 0), (-1,), (0,), (0,))
             genertator1 = itertools.product((0,), (False, True), (0, 1), (0, 1), (0, 1, 2, 3), (0,))
-            genertator2 = itertools.product((0,), (False, True), (0,), (0,), (0, 1, 2, 3), (1,))
+            genertator2 = itertools.product((1,), (False, True), (0,), (0,), (0, 1, 2, 3), (1,))
             genertator3 = itertools.product((0,), (False, True), (-1,), (1, 0), (0,), (0,))
-            genertator4 = itertools.product((0,), (False,), (1, -1), (0,), (0,), (1,))
-            genertator5 = itertools.product((0,), (False,), (0,), (1, -1), (0,), (1,))
+            genertator4 = itertools.product((1,), (False,), (1, -1), (0,), (0,), (1,))
+            genertator5 = itertools.product((1,), (False,), (0,), (1, -1), (0,), (1,))
             genertator = itertools.chain(genertator0, genertator1, genertator2, genertator3, genertator4, genertator5)
         else:
             genertator0 = itertools.product((0,), (False, True), (-1, 1, 0), (-1,), (0,))

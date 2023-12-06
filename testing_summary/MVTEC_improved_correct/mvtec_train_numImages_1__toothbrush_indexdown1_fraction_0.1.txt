@@ -1,0 +1,15 @@
+toothbrush results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.41111111111111115
+average (precision score) = 0.2157270295742092
+recall score = 0.43798449612403095
+f1 score = 0.28907275039237784
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.42777777777777776
+average (precision score)  normalize all = 0.2432447444153237
+recall score normalize all  = 0.44961240310077516
+f1 score normalize all = 0.31569524676272864
+confusion matrix = [[29  1]
+ [12  0]]

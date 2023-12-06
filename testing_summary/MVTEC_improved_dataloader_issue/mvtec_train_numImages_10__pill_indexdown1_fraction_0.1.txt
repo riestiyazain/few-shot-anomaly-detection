@@ -1,0 +1,15 @@
+pill results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.660392798690671
+average (precision score) = 0.2338213857112781
+recall score = 0.6346153846153846
+f1 score = 0.3417327632699138
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.6552100381887616
+average (precision score)  normalize all = 0.2320478963049925
+recall score normalize all  = 0.6302655677655677
+f1 score normalize all = 0.3392079683485132
+confusion matrix = [[138   3]
+ [ 24   2]]

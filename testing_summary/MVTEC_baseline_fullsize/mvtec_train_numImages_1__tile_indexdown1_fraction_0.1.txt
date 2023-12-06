@@ -1,0 +1,15 @@
+tile results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.5407647907647908
+average (precision score) = 0.3258680638124687
+recall score = 0.5290190035952749
+f1 score = 0.4033056645583129
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.5822510822510822
+average (precision score)  normalize all = 0.3443980396620712
+recall score normalize all  = 0.5585516178736518
+f1 score normalize all = 0.4260793071692451
+confusion matrix = [[75  9]
+ [29  4]]

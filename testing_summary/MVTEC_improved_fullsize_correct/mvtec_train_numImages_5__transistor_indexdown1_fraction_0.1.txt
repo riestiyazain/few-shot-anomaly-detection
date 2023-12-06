@@ -1,0 +1,15 @@
+transistor results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.8054166666666666
+average (precision score) = 0.8145123824116732
+recall score = 0.620957095709571
+f1 score = 0.7046854720503037
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.7775000000000001
+average (precision score)  normalize all = 0.7476991191623457
+recall score normalize all  = 0.6099009900990099
+f1 score normalize all = 0.671806712392481
+confusion matrix = [[10 30]
+ [ 2 58]]

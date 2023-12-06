@@ -26,7 +26,8 @@ def apply_transform(x, is_flip, tx, ty, k_rotate, flag_color, jiggle, channels_f
     if flag_color != 0:
         x = color_transform(x,flag_color)
     if jiggle != 0:
-        x = color_jiggle(x)
+        # x = color_jiggle(x)
+        x = blur_transform(x)
     
     x = x.contiguous()
     return x
@@ -43,7 +44,11 @@ def color_transform(x, flag):
 def color_jiggle(x):
     aug = kornia.augmentation.ColorJiggle(brightness=np.random.rand(), contrast=np.random.rand(), saturation=np.random.rand(), hue=np.random.rand(), keepdim=True)
     x = aug(x)
+    return x
 
+def blur_transform(x):
+    aug = kornia.augmentation.RandomGaussianBlur(kernel_size=(3, 3), sigma=5, keepdim=True, p=1)
+    x = aug(x)
     return x
 
 def affine(tensor: torch.Tensor, matrix: torch.Tensor, mode: str = 'bilinear',

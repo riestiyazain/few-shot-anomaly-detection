@@ -1,0 +1,15 @@
+bottle results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.9182539682539682
+average (precision score) = 0.4704014016058782
+recall score = 0.8136904761904761
+f1 score = 0.5961584947180188
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.8333333333333333
+average (precision score)  normalize all = 0.3849541096368344
+recall score normalize all  = 0.75
+f1 score normalize all = 0.5087704952581913
+confusion matrix = [[ 6 57]
+ [ 0 20]]

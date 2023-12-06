@@ -1,0 +1,15 @@
+carpet results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.4586677367576244
+average (precision score) = 0.1718935150625323
+recall score = 0.4688256658595642
+f1 score = 0.25155510887048427
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.39446227929374
+average (precision score)  normalize all = 0.15316854618861342
+recall score normalize all  = 0.42039951573849876
+f1 score normalize all = 0.22453126984691052
+confusion matrix = [[32 57]
+ [10 18]]

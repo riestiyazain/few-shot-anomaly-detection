@@ -1,0 +1,15 @@
+grid results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.8888888888888888
+average (precision score) = 0.5226598145395687
+recall score = 0.7805907172995782
+f1 score = 0.6261012592250553
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.9131161236424394
+average (precision score)  normalize all = 0.5570923506893655
+recall score normalize all  = 0.7980711271850515
+f1 score normalize all = 0.6561559952282493
+confusion matrix = [[47 10]
+ [ 3 18]]

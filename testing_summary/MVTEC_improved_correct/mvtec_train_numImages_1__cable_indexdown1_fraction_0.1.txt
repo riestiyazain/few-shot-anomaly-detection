@@ -1,0 +1,15 @@
+cable results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.5224887556221889
+average (precision score) = 0.4036638552315882
+recall score = 0.513701758392327
+f1 score = 0.45208328969893874
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.5963268365817092
+average (precision score)  normalize all = 0.4092753076989798
+recall score normalize all  = 0.558689198447134
+f1 score normalize all = 0.4724505746867363
+confusion matrix = [[92  0]
+ [58  0]]

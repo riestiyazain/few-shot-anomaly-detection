@@ -1,0 +1,15 @@
+capsule results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.46988432389309925
+average (precision score) = 0.1343279625047753
+recall score = 0.47531873161163773
+f1 score = 0.2094609791997115
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.44475468687674513
+average (precision score)  normalize all = 0.1896591304171124
+recall score normalize all  = 0.4547237659365805
+f1 score normalize all = 0.2676747459174928
+confusion matrix = [[109   0]
+ [ 22   1]]

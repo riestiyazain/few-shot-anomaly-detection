@@ -1,0 +1,15 @@
+leather results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.7353940217391304
+average (precision score) = 0.3165102788670226
+recall score = 0.67325
+f1 score = 0.430590214210551
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.7466032608695652
+average (precision score)  normalize all = 0.3223071599767632
+recall score normalize all  = 0.6815
+f1 score normalize all = 0.4376384992696183
+confusion matrix = [[68 24]
+ [ 6 26]]

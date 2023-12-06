@@ -1,0 +1,15 @@
+zipper results: 
+ 
+results without norm, without top_k: 
+roc_auc_score (not normal) all =0.48503151260504207
+average (precision score) = 0.19641777412701136
+recall score = 0.48828125
+f1 score = 0.2801438672860268
+ 
+results with normalization 
+roc_auc_score T1 normalize all =0.4860819327731093
+average (precision score)  normalize all = 0.18851607019051062
+recall score normalize all  = 0.48910361842105265
+f1 score normalize all = 0.2721405343154088
+confusion matrix = [[65 54]
+ [17 15]]

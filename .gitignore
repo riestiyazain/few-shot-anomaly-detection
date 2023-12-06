@@ -163,6 +163,8 @@ cython_debug/
 mnist_data/
 MNIST/
 mnist_test_*/
+mnist_train*
+
 
 Dataloaders/Paris/
 paris_test_*/
@@ -188,6 +190,10 @@ biscuit/
 biscuit1/
 biscuit_experimental/
 biscuit_test_*/
+biscuit_visualizations/
+
+
 
 
 eval_executor.sh
+trainer.sh
